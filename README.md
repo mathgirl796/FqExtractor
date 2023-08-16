@@ -1,0 +1,1 @@
+Extractor non-overlap length>threshold-`[acgtACGT]`-substrings to output_file
