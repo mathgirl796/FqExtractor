@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <zlib.h>
 
 void processFile(const char *input_file_path, const char *output_file_path, int threshold)
 {
     FILE *input_file = fopen(input_file_path, "rb");
-    FILE *output_file = fopen(output_file_path, "w");
+    gzFile output_file = gzopen(output_file_path, "wb");
+    gzbuffer(output_file, 1000000);
 
     if (input_file == NULL || output_file == NULL)
     {
@@ -31,15 +33,15 @@ void processFile(const char *input_file_path, const char *output_file_path, int 
                 length += 1;
                 if (length == threshold) // 达标后立刻写入头部
                 {
-                    fprintf(output_file, "@%d\n", id);
+                    gzprintf(output_file, "@%d\n", id);
                     for (int i = 0; i < length; ++i) {
-                        fprintf(output_file, "%c", buf[i]);
+                        gzprintf(output_file, "%c", buf[i]);
                     }
                 }
             }
             else // acgt串长度达标，继续写入
             { 
-                fprintf(output_file, "%c", ch);
+                gzprintf(output_file, "%c", ch);
                 length += 1;
             }
         }
@@ -51,16 +53,18 @@ void processFile(const char *input_file_path, const char *output_file_path, int 
             }
             else // 长度达标，一定已有头部写入，此处补充质量分数
             {
-                fprintf(output_file, "\n+\n");
+                gzprintf(output_file, "\n+\n");
                 for (int i = 0; i < length; ++i) {
-                    fprintf(output_file, "%c", 'I');
+                    gzprintf(output_file, "%c", 'I');
                 }
-                fprintf(output_file, "\n");
+                gzprintf(output_file, "\n");
                 length = 0;
                 id += 1;
             }
         }
     }
+    fclose(input_file);
+    gzclose(output_file);
 }
 
 // 测试
