@@ -23,7 +23,7 @@ void processFile(const char *input_file_path, const char *output_file_path, int 
     while (!feof(input_file))
     {
         ch = fgetc(input_file);
-        int is_acgt = ch == 'a' || ch == 'c' || ch == 'g' || ch == 't' || ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' ;
+        int is_acgt = ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T' || ch == 'a' || ch == 'c' || ch == 'g' || ch == 't' ;
             
         if (is_acgt)
         { 
